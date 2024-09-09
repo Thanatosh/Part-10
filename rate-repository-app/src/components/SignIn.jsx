@@ -1,8 +1,9 @@
-import Text from './Text';
 import { TextInput, Pressable, View, StyleSheet } from 'react-native';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
+import { useNavigate } from "react-router-native";
 import useSignIn from '../hooks/useSignIn';
+import Text from './Text';
+import * as yup from 'yup';
 
 const SignInValidation = yup.object().shape({
   username: yup.string()
@@ -54,6 +55,7 @@ const initialValues = {
 };
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const [signIn] = useSignIn();
 
   const formik = useFormik({
@@ -63,7 +65,8 @@ const SignIn = () => {
       const { username, password } = values;
       try {
         const { data } = await signIn({ username, password });
-        console.log('Authentication result:', data);
+        console.log('Sign-in successful:', data);
+        navigate("/")
       } catch (e) {
         console.error('Error signing in:', e);
       }
