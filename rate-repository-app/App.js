@@ -4,7 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 
 import Main from './src/components/Main';
 import createApolloClient from './src/utils/apolloClient';
-import Constants from 'expo-constants';
 import AuthStorage from './src/utils/authStorage';
 import AuthStorageContext from './src/contexts/AuthStorageContext';
 
@@ -12,7 +11,6 @@ const authStorage = new AuthStorage();
 const apolloClient = createApolloClient(authStorage);
 
 const App = () => {
-  console.log(Constants.expoConfig);
   return (
     <>
       <NativeRouter>
