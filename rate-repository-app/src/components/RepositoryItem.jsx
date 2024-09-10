@@ -1,5 +1,6 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Pressable, Image, Linking } from 'react-native';
 import Text from './Text';
+import { useNavigate } from 'react-router-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -38,6 +39,18 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
+  button: {
+    backgroundColor: '#0366d6',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
 
 const formatCount = (count) => {
@@ -47,35 +60,50 @@ const formatCount = (count) => {
   return count.toString();
 };
 
-const RepositoryItem = ({ item }) => (
-  <View testID="repositoryItem" style={styles.container}>
-    <View style={styles.header}>
-      <Image source={{ uri: item.ownerAvatarUrl }} style={styles.image} />
-      <View style={styles.textContainer}>
-        <Text fontWeight="bold" fontSize="subheading">{item.fullName}</Text>
-        <Text color="textSecondary">{item.description}</Text>
-        <Text style={styles.language}>{item.language}</Text>
-      </View>
+const RepositoryItem = ({ item, showUrlButton }) => {
+  const navigate = useNavigate();
+
+  return (
+    <View testID="repositoryItem" style={styles.container}>
+      <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
+        <View style={styles.header}>
+          <Image source={{ uri: item.ownerAvatarUrl }} style={styles.image} />
+          <View style={styles.textContainer}>
+            <Text fontWeight="bold" fontSize="subheading">{item.fullName}</Text>
+            <Text color="textSecondary">{item.description}</Text>
+            <Text style={styles.language}>{item.language}</Text>
+          </View>
+        </View>
+        <View style={styles.countsContainer}>
+          <View style={styles.countItem}>
+            <Text fontWeight="bold">{formatCount(item.stargazersCount)}</Text>
+            <Text>Stars</Text>
+          </View>
+          <View style={styles.countItem}>
+            <Text fontWeight="bold">{formatCount(item.forksCount)}</Text>
+            <Text>Forks</Text>
+          </View>
+          <View style={styles.countItem}>
+            <Text fontWeight="bold">{formatCount(item.reviewCount)}</Text>
+            <Text>Reviews</Text>
+          </View>
+          <View style={styles.countItem}>
+            <Text fontWeight="bold">{item.ratingAverage}</Text>
+            <Text>Rating</Text>
+          </View>
+        </View>
+      </Pressable>
+      
+      {showUrlButton && (
+        <Pressable
+          style={styles.button}
+          onPress={() => Linking.openURL(item.url)}
+        >
+          <Text style={styles.buttonText}>Open in GitHub</Text>
+        </Pressable>
+      )}
     </View>
-    <View style={styles.countsContainer}>
-      <View style={styles.countItem}>
-        <Text fontWeight="bold">{formatCount(item.stargazersCount)}</Text>
-        <Text>Stars</Text>
-      </View>
-      <View style={styles.countItem}>
-        <Text fontWeight="bold">{formatCount(item.forksCount)}</Text>
-        <Text>Forks</Text>
-      </View>
-      <View style={styles.countItem}>
-        <Text fontWeight="bold">{formatCount(item.reviewCount)}</Text>
-        <Text>Reviews</Text>
-      </View>
-      <View style={styles.countItem}>
-        <Text fontWeight="bold">{item.ratingAverage}</Text>
-        <Text>Rating</Text>
-      </View>
-    </View>
-  </View>
-);
+  );
+};
 
 export default RepositoryItem;
