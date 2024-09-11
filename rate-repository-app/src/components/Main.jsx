@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import RepositoryList from './RepositoryList';
 import SingleRepository from './SingleRepository';
 import SignIn from './SignIn';
+import NewReview from './NewReview';
 import AppBar from './AppBar';
 import theme from '../theme';
 import { Route, Routes } from 'react-router-native';
@@ -22,6 +23,7 @@ const Main = () => {
         <Route path="/" element={<RepositoryList />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/repository/:id" element={<SingleRepository />} />
+        <Route path="/newreview" element={<NewReview />} />
       </Routes>
     </View>
   );
