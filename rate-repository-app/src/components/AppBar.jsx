@@ -58,7 +58,12 @@ const AppBar = () => {
         <Link to="/signin" component={Pressable} style={styles.link}>
           <Text style={styles.text}>Sign in</Text>
         </Link>
-      )}
+        )}
+        {!data?.me && (
+        <Link to="/signup" style={styles.link}>
+          <Text style={styles.text}>Sign up</Text>
+        </Link>
+        )}
       </ScrollView>
     </View>
   );
