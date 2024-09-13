@@ -4,6 +4,7 @@ import SingleRepository from './SingleRepository';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import NewReview from './NewReview';
+import MyReviews from './MyReviews';
 import AppBar from './AppBar';
 import theme from '../theme';
 import { Route, Routes } from 'react-router-native';
@@ -26,6 +27,7 @@ const Main = () => {
         <Route path="/repository/:id" element={<SingleRepository />} />
         <Route path="/newreview" element={<NewReview />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/myreviews" element={<MyReviews />} />
       </Routes>
     </View>
   );
