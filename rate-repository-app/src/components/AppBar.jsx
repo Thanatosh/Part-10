@@ -47,7 +47,7 @@ const AppBar = () => {
         </Link>
         {data?.me && (
         <Link to="/myreviews" style={styles.link}>
-          <Text style={styles.text}>My review</Text>
+          <Text style={styles.text}>My reviews</Text>
         </Link>
         )}
         {data?.me && (

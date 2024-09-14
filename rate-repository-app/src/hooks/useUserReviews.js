@@ -8,8 +8,10 @@ const useUserReviews = () => {
   });
 
   const reviews = data?.me?.reviews?.edges.map(edge => edge.node) || [];
+  const id = data?.me?.id
 
   return {
+    id,
     reviews,
     loading,
     error,

@@ -1,5 +1,7 @@
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, Pressable, Alert } from 'react-native';
+import { useNavigate } from 'react-router-native';
 import useUserReviews from '../hooks/useUserReviews';
+import useDeleteReview from '../hooks/useDeleteReview';
 import Text from './Text';
 
 const styles = StyleSheet.create({
@@ -13,6 +15,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 8,
   },
+  buttonContainer: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly', 
+    paddingBottom: 20,
+  },
   ratingCircle: {
     width: 40,
     height: 40,
@@ -22,6 +30,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center',
     margin: 8, 
+  },
+  viewButton: {
+    backgroundColor: '#0366d6',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  deleteButton: {
+    backgroundColor: '#d73a4a',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   reviewTextContainer: {
     padding: 5,
@@ -40,15 +69,39 @@ const styles = StyleSheet.create({
 });
 
 const ReviewItem = ({ review }) => {
+  const navigate = useNavigate();
+  const { deleteReview } = useDeleteReview();
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete Review",
+      "Are you sure you want to delete this review?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", style: "destructive", onPress: () => deleteReview(review.id) }
+      ]
+    );
+  };
+
   return (
-    <View style={styles.reviewContainer}>
-      <View style={styles.ratingCircle}>
-        <Text style={styles.ratingText}>{review.rating}</Text>
+    <View>
+      <View style={styles.reviewContainer}>
+        <View style={styles.ratingCircle}>
+          <Text style={styles.ratingText}>{review.rating}</Text>
+        </View>
+        <View style={styles.reviewTextContainer}>
+          <Text style={styles.username}>{review.repository.fullName}</Text>
+          <Text style={styles.dateText}>{new Date(review.createdAt).toLocaleDateString()}</Text>
+          <Text>{review.text}</Text>
+        </View >
       </View>
-      <View style={styles.reviewTextContainer}>
-        <Text style={styles.username}>{review.repository.fullName}</Text>
-        <Text style={styles.dateText}>{new Date(review.createdAt).toLocaleDateString()}</Text>
-        <Text>{review.text}</Text>
+      <View style={styles.buttonContainer}>
+        <Pressable style={styles.viewButton} onPress={() => navigate(`/repository/${review.repository.id}`)}>
+          <Text style={styles.buttonText}>View repository</Text>
+        </Pressable>
+        <Pressable style={styles.deleteButton} onPress={handleDelete}>
+          <Text style={styles.buttonText}>Delete review</Text>
+        </Pressable>
       </View>
     </View>
   );
