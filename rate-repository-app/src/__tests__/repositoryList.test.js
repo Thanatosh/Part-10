@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react-native';
 import { RepositoryListContainer } from '../components/RepositoryList';
+import { MemoryRouter } from 'react-router';
 
 describe('RepositoryList', () => {
   describe('RepositoryListContainer', () => {
@@ -47,7 +48,19 @@ describe('RepositoryList', () => {
         ],
       };
 
-      render(<RepositoryListContainer repositories={repositories.edges.map(edge => edge.node)} />);
+      render(
+        <MemoryRouter>
+          <RepositoryListContainer 
+            repositories={repositories}
+            searchQuery="" 
+            setSearchQuery={() => {}} 
+            selectedOrder="latest" 
+            setSelectedOrder={() => {}} 
+            onEndReach={() => {}} 
+            loadingMore={false} 
+          />
+        </MemoryRouter>
+      );
 
       const repositoryItems = screen.getAllByTestId('repositoryItem');
       const [firstRepositoryItem, secondRepositoryItem] = repositoryItems;

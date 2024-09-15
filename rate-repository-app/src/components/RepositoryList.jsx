@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Searchbar } from 'react-native-paper';
 import { useDebounce } from 'use-debounce';
@@ -66,8 +66,19 @@ export class RepositoryListContainer extends React.Component{
     <RepositoryItem item={item} showUrlButton={false} />
   );
 
+  renderFooter = () => {
+    const { loadingMore } = this.props;
+
+    if (!loadingMore) return null;
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <ActivityIndicator size="large" color="#0366d6" />
+      </View>
+    );
+  };
+
   render() {
-    const { repositories } = this.props;
+    const { repositories, onEndReach } = this.props;
     const repositoryNodes = repositories ? repositories.edges.map((edge) => edge.node) : [];
 
     return (
@@ -77,6 +88,9 @@ export class RepositoryListContainer extends React.Component{
         renderItem={this.renderItem}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={this.renderHeader}
+        ListFooterComponent={this.renderFooter}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
       />
     );
   }
@@ -86,6 +100,7 @@ const RepositoryList = () => {
   const [selectedOrder, setSelectedOrder] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedValue] = useDebounce(searchQuery, 1000)
+  onEndReach
   
   const getOrderingOptions = (selectedOrder) => {
     switch (selectedOrder) {
@@ -100,7 +115,7 @@ const RepositoryList = () => {
   };
 
   const { orderBy, orderDirection } = getOrderingOptions(selectedOrder);
-  const { repositories, loading, error } = useRepositories({ 
+  const { repositories, loading, error, fetchMore, loadingMore } = useRepositories({ 
     orderBy, 
     orderDirection,
     searchKeyword: debouncedValue
@@ -114,6 +129,10 @@ const RepositoryList = () => {
     return <Text>Error: {error.message}</Text>;
   }
 
+  const onEndReach = () => {
+    fetchMore();
+  };
+
   return (
     <RepositoryListContainer 
       repositories={repositories}
@@ -121,6 +140,8 @@ const RepositoryList = () => {
       setSearchQuery={setSearchQuery}
       selectedOrder={selectedOrder}
       setSelectedOrder={setSelectedOrder}
+      onEndReach={onEndReach}
+      loadingMore={loadingMore}
     />
   );
 };

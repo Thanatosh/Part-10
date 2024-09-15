@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-native';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import RepositoryItem from './RepositoryItem';
 import useRepository from '../hooks/useRepository';
 import Text from './Text';
@@ -70,12 +70,27 @@ const RepositoryInfo = ({ repository }) => {
 
 const SingleRepository = () => {
   const { id } = useParams();
-  const { repository, loading, error } = useRepository(id);
+  const { repository, loading, error, fetchMore, loadingMore } = useRepository(id, 6);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
   const reviews = repository.reviews.edges.map(edge => edge.node);
+
+  const onEndReached = () => {
+    if (repository.reviews.pageInfo.hasNextPage) {
+      fetchMore();
+    }
+  };
+
+  const renderFooter = () => {
+    if (!loadingMore || !repository.reviews.pageInfo.hasNextPage) return null;
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <ActivityIndicator size="large" color="#0366d6" />
+      </View>
+    );
+  };
 
   return (
     <FlatList
@@ -83,6 +98,9 @@ const SingleRepository = () => {
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={(item) => item.id}
       ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={renderFooter}
     />
   );
 };

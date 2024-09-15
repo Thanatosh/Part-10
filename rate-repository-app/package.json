@@ -48,6 +48,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "testPathIgnorePatterns": ["<rootDir>/src/__tests__/"],
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
     },
